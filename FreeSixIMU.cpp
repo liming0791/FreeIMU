@@ -277,6 +277,10 @@ void FreeSixIMU::getQ(float * q) {
     //        val[6], val[7], val[8],
     //        sampleFreq,
     //        q0, q1, q2, q3);
+  MadgwickAHRS::updateIMU(val[3] * M_PI/180, val[4] * M_PI/180, val[5] * M_PI/180, 
+            val[0], val[1], val[2], 
+            sampleFreq,
+            q0, q1, q2, q3);
 // use MahonyAHRS
     //MahonyAHRS::update(
     //        val[3] * M_PI/180, val[4] * M_PI/180, val[5] * M_PI/180, 
@@ -285,11 +289,11 @@ void FreeSixIMU::getQ(float * q) {
     //        sampleFreq,
     //        q0, q1, q2, q3);
 
-    MahonyAHRS::updateIMU(
-            val[3] * M_PI/180, val[4] * M_PI/180, val[5] * M_PI/180, 
-            val[0], val[1], val[2], 
-            sampleFreq,
-            q0, q1, q2, q3);
+    //MahonyAHRS::updateIMU(
+    //        val[3] * M_PI/180, val[4] * M_PI/180, val[5] * M_PI/180, 
+    //        val[0], val[1], val[2], 
+    //        sampleFreq,
+    //        q0, q1, q2, q3);
 
 
   q[0] = q0;

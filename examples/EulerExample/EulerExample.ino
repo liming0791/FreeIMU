@@ -17,9 +17,9 @@ void loop() {
   //imu.getQ(q);
   imu.getEuler(angles);
 
-  float y = angles[0];
-  float p = angles[1];
-  float r = angles[2];
+  float y = -angles[0]/180*PI;
+  float p = -angles[1]/180*PI;
+  float r = -angles[2]/180*PI;
 
   float sy = sin(y), cy = cos(y),
         sp = sin(p), cp = cos(p),

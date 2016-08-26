@@ -17,11 +17,12 @@ byte[] inBuffer = new byte[22]; // this is the number of chars on each line from
 PFont font;
 
 boolean kalman = true;
+String inString;
 
 void setup() 
 {
   size(800, 600, P3D);
-  myPort = new Serial(this, serialPort, 9600);  
+  myPort = new Serial(this, serialPort, 115200);  
 
   font = createFont("Courier", 32); 
   
@@ -88,22 +89,20 @@ void readQ() {
 }
 
 void readE(){
-  if (myPort.available() >= 18) {
-    String inputString = myPort.readStringUntil('\n');
-    //print(inputString);
-    if (inputString != null && inputString.length() > 0) {
-      String [] inputStringArr = split(inputString, ",\t");
-      if (inputStringArr.length >= 3) { // q1,q2,q3,q4,rn so we have 5 elements
-       if(!kalman){
-          Euler[0] = float(inputStringArr[3])*PI/180;
-          Euler[1] = float(inputStringArr[4])*PI/180;
-          Euler[2] = float(inputStringArr[5])*PI/180;
-       }else{
-          Euler[0] = float(inputStringArr[0])*PI/180;
-          Euler[1] = float(inputStringArr[1])*PI/180;
-          Euler[2] = float(inputStringArr[2])*PI/180;
-       }
-      }
+  String inputString = inString;
+  //print(inputString);
+  if (inputString != null && inputString.length() > 0) {
+    String [] inputStringArr = split(inputString, ",\t");
+    if (inputStringArr.length >= 3) { // q1,q2,q3,q4,rn so we have 5 elements
+     if(!kalman){
+        Euler[0] = float(inputStringArr[3])*PI/180;
+        Euler[1] = float(inputStringArr[4])*PI/180;
+        Euler[2] = float(inputStringArr[5])*PI/180;
+     }else{
+        Euler[0] = float(inputStringArr[0])*PI/180;
+        Euler[1] = float(inputStringArr[1])*PI/180;
+        Euler[2] = float(inputStringArr[2])*PI/180;
+     }
     }
   }
   print(Euler[0]);
@@ -267,4 +266,9 @@ float [] quatConjugate(float [] quat) {
   conj[3] = -quat[3];
 
   return conj;
+}
+
+void serialEvent(Serial p){
+  if (myPort.available() >= 18)
+    inString = p.readStringUntil('\n');
 }

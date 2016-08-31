@@ -5,17 +5,17 @@ FreeSixIMU imu;
 
 void setup() {
   imu.init();
-  Serial.begin(115200);
+  Serial.begin(9600);
 }
 
 void loop() {
   
-  float angles[3];
+  float R[9];
   //float q[4];
   //  
   //imu.getYawPitchRoll(angles);  
   //imu.getQ(q);
-  imu.getEuler(angles);
+  imu.getRMat(R);
 
   //float y = -angles[0]/180*PI;
   //float p = -angles[1]/180*PI;
@@ -29,29 +29,29 @@ void loop() {
   //      m10=sr*sp*cy-cr*sy, m11=sr*sp*sy+cr*cy, m12=sr*cp,
   //      m20=cr*sp*cy+sr*sy, m21=cr*sp*sy-sr*cy, m22=cr*cp;
 
-  //Serial.print(m00);
-  //Serial.print(" ");
-  //Serial.print(m10);
-  //Serial.print(" ");
-  //Serial.print(m20);
-  //Serial.print(" ");
-  //Serial.print(m01);
-  //Serial.print(" ");
-  //Serial.print(m11);
-  //Serial.print(" ");
-  //Serial.print(m21);
-  //Serial.print(" ");
-  //Serial.print(m02);
-  //Serial.print(" ");
-  //Serial.print(m12);
-  //Serial.print(" ");
-  //Serial.println(m22);
+  Serial.print(R[0]);
+  Serial.print(" ");
+  Serial.print(R[1]);
+  Serial.print(" ");
+  Serial.print(R[2]);
+  Serial.print(" ");
+  Serial.print(R[3]);
+  Serial.print(" ");
+  Serial.print(R[4]);
+  Serial.print(" ");
+  Serial.print(R[5]);
+  Serial.print(" ");
+  Serial.print(R[6]);
+  Serial.print(" ");
+  Serial.print(R[7]);
+  Serial.print(" ");
+  Serial.println(R[8]);
   
-  Serial.print(-angles[0]);   //yaw
-  Serial.print(",\t");
-  Serial.print(-angles[1]);  //pitch
-  Serial.print(",\t");
-  Serial.println(-angles[2]);  //roll
+  //Serial.print(-angles[0]);   //yaw
+  //Serial.print(",\t");
+  //Serial.print(-angles[1]);  //pitch
+  //Serial.print(",\t");
+  //Serial.println(-angles[2]);  //roll
 
 
   // Serial.print(q[0]);   

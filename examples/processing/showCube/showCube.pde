@@ -22,7 +22,7 @@ String inString;
 void setup() 
 {
   size(800, 600, P3D);
-  myPort = new Serial(this, serialPort, 115200);  
+  myPort = new Serial(this, serialPort, 9600);  
 
   font = createFont("Courier", 32); 
   
@@ -64,8 +64,8 @@ float decodeFloat(String inString) {
 }
 
 void readQ() {
-  if (myPort.available() >= 18) {
-    String inputString = myPort.readStringUntil('\n');
+  
+    String inputString = inString;
     //print(inputString);
     if (inputString != null && inputString.length() > 0) {
       String [] inputStringArr = split(inputString, ",\t");
@@ -74,6 +74,14 @@ void readQ() {
         q[1] = float(inputStringArr[1]);
         q[2] = float(inputStringArr[2]);
         q[3] = float(inputStringArr[3]);
+        
+        float len = sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+        q[0] /= len;
+        q[1] /= len;
+        q[2] /= len;
+        q[3] /= len;
+        
+        
       }
     }
     
@@ -85,7 +93,6 @@ void readQ() {
     print(",");
     println(q[3]);
     
-  }
 }
 
 void readE(){
@@ -170,9 +177,12 @@ void drawCube() {
 
   // a demonstration of the following is at 
   // http://www.varesano.net/blog/fabio/ahrs-sensor-fusion-orientation-filter-3d-graphical-rotating-cube
-  rotateY(Euler[0]);
-  rotateX(Euler[1]);
-  rotateZ(Euler[2]);
+  //rotateY(Euler[0]);
+  //rotateX(Euler[1]);
+  //rotateZ(Euler[2]);
+  float angle = acos(q[0])*2;
+  
+  rotate(angle, q[2], q[3], q[1]);
 
   buildBoxShape();
 
@@ -184,8 +194,8 @@ void draw() {
   background(#000000);
   fill(#ffffff);
 
-  readE();
-  //readQ();
+  //readE();
+  readQ();
   //if (hq != null) { // use home quaternion
   //  quaternionToEuler(quatProd(hq, q), Euler);
   //  text("Disable home position by pressing n", 20, VIEW_SIZE_Y - 30);

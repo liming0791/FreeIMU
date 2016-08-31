@@ -277,10 +277,10 @@ void FreeSixIMU::getQ(float * q) {
     //        val[6], val[7], val[8],
     //        sampleFreq,
     //        q0, q1, q2, q3);
-  MadgwickAHRS::updateIMU(val[3] * M_PI/180, val[4] * M_PI/180, val[5] * M_PI/180, 
-            val[0], val[1], val[2], 
-            sampleFreq,
-            q0, q1, q2, q3);
+  //MadgwickAHRS::updateIMU(val[3] * M_PI/180, val[4] * M_PI/180, val[5] * M_PI/180, 
+  //          val[0], val[1], val[2], 
+  //          sampleFreq,
+  //          q0, q1, q2, q3);
 // use MahonyAHRS
     //MahonyAHRS::update(
     //        val[3] * M_PI/180, val[4] * M_PI/180, val[5] * M_PI/180, 
@@ -289,11 +289,11 @@ void FreeSixIMU::getQ(float * q) {
     //        sampleFreq,
     //        q0, q1, q2, q3);
 
-    //MahonyAHRS::updateIMU(
-    //        val[3] * M_PI/180, val[4] * M_PI/180, val[5] * M_PI/180, 
-    //        val[0], val[1], val[2], 
-    //        sampleFreq,
-    //        q0, q1, q2, q3);
+    MahonyAHRS::updateIMU(
+            val[3] * M_PI/180, val[4] * M_PI/180, val[5] * M_PI/180, 
+            val[0], val[1], val[2], 
+            sampleFreq,
+            q0, q1, q2, q3);
 
 
   q[0] = q0;
@@ -347,6 +347,19 @@ void FreeSixIMU::getYawPitchRoll(float * ypr) {
   //ypr[2] = atan(gy / gz)  * 180/M_PI;
 }
 
+void FreeSixIMU::getRMat(float* R)
+{
+    float q[4];
+    getQ(q);
+    //oder by col
+    float q02 = q[0]*q[0], q12 = q[1]*q[1], q22 = q[2]*q[2], q32 = q[3]*q[3];
+    float dq0q1 = 2*q[0]*q[1], dq1q2 = 2*q[1]*q[2], dq2q3 = 2*q[2]*q[3], dq3q0 = 2*q[3]*q[0];
+    float dq0q2 = 2*q[0]*q[2], dq1q3 = 2*q[1]*q[3];
+    R[0] = q02 + q12 - q22 -q32;    R[3] = dq1q2 + dq3q0;           R[6] = dq1q3 - dq0q2;
+    R[1] = dq1q2 - dq3q0;           R[4] = q02 - q12 + q22 - q32;   R[7] = dq2q3 + dq0q1;
+    R[2] = dq1q3 + dq0q2;           R[5] = dq2q3 - dq0q1;           R[8] = q02 - q12 - q22 + q32;
+
+}
 
 float invSqrt(float number) {
   volatile long i;

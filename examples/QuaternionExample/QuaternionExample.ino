@@ -10,12 +10,12 @@ void setup() {
 
 void loop() {
   
-  float angles[3];
-  //float q[4];
+  //float angles[3];
+  float q[4];
   //  
   //imu.getYawPitchRoll(angles);  
-  //imu.getQ(q);
-  imu.getEuler(angles);
+  imu.getQ(q);
+  //imu.getEuler(angles);
 
   //float y = -angles[0]/180*PI;
   //float p = -angles[1]/180*PI;
@@ -47,19 +47,19 @@ void loop() {
   //Serial.print(" ");
   //Serial.println(m22);
   
-  Serial.print(-angles[0]);   //yaw
-  Serial.print(",\t");
-  Serial.print(-angles[1]);  //pitch
-  Serial.print(",\t");
-  Serial.println(-angles[2]);  //roll
+  //Serial.print(-angles[0]);   //yaw
+  //Serial.print(",\t");
+  //Serial.print(-angles[1]);  //pitch
+  //Serial.print(",\t");
+  //Serial.println(-angles[2]);  //roll
 
 
-  // Serial.print(q[0]);   
-  // Serial.print(",\t");
-  // Serial.print(q[1]);  
-  // Serial.print(",\t");
-  // Serial.print(q[2]); 
-  // Serial.print(",\t");
-  // Serial.println(q[3]);  
+  Serial.print(q[0]);   
+  Serial.print(",\t");
+  Serial.print(q[1]);  
+  Serial.print(",\t");
+  Serial.print(q[2]); 
+  Serial.print(",\t");
+  Serial.println(q[3]);  
 
 }

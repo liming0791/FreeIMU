@@ -17,7 +17,6 @@ byte[] inBuffer = new byte[22]; // this is the number of chars on each line from
 PFont font;
 
 boolean kalman = true;
-String inString;
 
 void setup() 
 {
@@ -64,52 +63,53 @@ float decodeFloat(String inString) {
 }
 
 void readQ() {
-  
-    String inputString = inString;
+  if (myPort.available() >= 18) {
+    String inputString = myPort.readStringUntil('\n');
     //print(inputString);
     if (inputString != null && inputString.length() > 0) {
-      String [] inputStringArr = split(inputString, ",\t");
-      if (inputStringArr.length >= 4) { // q1,q2,q3,q4,rn so we have 5 elements
-        q[0] = float(inputStringArr[0]);
-        q[1] = float(inputStringArr[1]);
-        q[2] = float(inputStringArr[2]);
-        q[3] = float(inputStringArr[3]);
-        
-        float len = sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
-        q[0] /= len;
-        q[1] /= len;
-        q[2] /= len;
-        q[3] /= len;
-        
-        
+      String [] inputStringArr = split(inputString, ",");
+      if (inputStringArr.length >= 5) { // q1,q2,q3,q4,rn so we have 5 elements
+        if(!kalman){
+          q[0] = float(inputStringArr[0]);
+          q[1] = float(inputStringArr[1]);
+          q[2] = float(inputStringArr[2]);
+          q[3] = float(inputStringArr[3]);
+        }else{
+          q[0] = float(inputStringArr[4]);
+          q[1] = float(inputStringArr[5]);
+          q[2] = float(inputStringArr[6]);
+          q[3] = float(inputStringArr[7]);
+        }
       }
     }
-    
-    print(q[0]);
-    print(",");
-    print(q[1]);
-    print(",");
-    print(q[2]);
-    print(",");
-    println(q[3]);
-    
+  }
+  
+  print(q[0]);
+  print(",");
+  print(q[1]);
+  print(",");
+  print(q[2]);
+  print(",");
+  println(q[3]);
 }
 
 void readE(){
-  String inputString = inString;
-  //print(inputString);
-  if (inputString != null && inputString.length() > 0) {
-    String [] inputStringArr = split(inputString, ",\t");
-    if (inputStringArr.length >= 3) { // q1,q2,q3,q4,rn so we have 5 elements
-     if(!kalman){
-        Euler[0] = float(inputStringArr[3])*PI/180;
-        Euler[1] = float(inputStringArr[4])*PI/180;
-        Euler[2] = float(inputStringArr[5])*PI/180;
-     }else{
-        Euler[0] = float(inputStringArr[0])*PI/180;
-        Euler[1] = float(inputStringArr[1])*PI/180;
-        Euler[2] = float(inputStringArr[2])*PI/180;
-     }
+  if (myPort.available() >= 18) {
+    String inputString = myPort.readStringUntil('\n');
+    //print(inputString);
+    if (inputString != null && inputString.length() > 0) {
+      String [] inputStringArr = split(inputString, ",\t");
+      if (inputStringArr.length >= 5) { // q1,q2,q3,q4,rn so we have 5 elements
+       if(!kalman){
+          Euler[0] = float(inputStringArr[3])*PI/180;
+          Euler[1] = float(inputStringArr[4])*PI/180;
+          Euler[2] = float(inputStringArr[5])*PI/180;
+       }else{
+          Euler[0] = float(inputStringArr[0])*PI/180;
+          Euler[1] = float(inputStringArr[1])*PI/180;
+          Euler[2] = float(inputStringArr[2])*PI/180;
+       }
+      }
     }
   }
   print(Euler[0]);
@@ -177,12 +177,9 @@ void drawCube() {
 
   // a demonstration of the following is at 
   // http://www.varesano.net/blog/fabio/ahrs-sensor-fusion-orientation-filter-3d-graphical-rotating-cube
-  //rotateY(Euler[0]);
-  //rotateX(Euler[1]);
-  //rotateZ(Euler[2]);
-  float angle = acos(q[0])*2;
-  
-  rotate(angle, q[2], q[3], q[1]);
+  rotateY(Euler[2]);
+  rotateX(Euler[1]);
+  rotateZ(Euler[0]);
 
   buildBoxShape();
 
@@ -201,16 +198,16 @@ void draw() {
   //  text("Disable home position by pressing n", 20, VIEW_SIZE_Y - 30);
   //}
   //else {
-    //quaternionToEuler(q, Euler);
-    //text("Point FreeIMU's X axis to your monitor then press h", 20, VIEW_SIZE_Y - 30);
+    quaternionToEuler(q, Euler);
+    text("Point FreeIMU's X axis to your monitor then press h", 20, VIEW_SIZE_Y - 30);
   //}
 
   textFont(font, 15);
   textAlign(LEFT, TOP);
   //text("Q:n" + q[0] + "n" + q[1] + "n" + q[2] + "n" + q[3], 20, 20);
-  text("nYaw (psi)  : " + degrees(Euler[0]), 20, 20);
+  text("nYaw (psi)  : " + degrees(Euler[2]), 20, 20);
   text("nPitch (theta): " + degrees(Euler[1]), 20, 40);
-  text("nRoll (phi)  : " + degrees(Euler[2]), 20, 60);
+  text("nRoll (phi)  : " + degrees(Euler[0]), 20, 60);
 
   drawCube();
 }
@@ -276,9 +273,4 @@ float [] quatConjugate(float [] quat) {
   conj[3] = -quat[3];
 
   return conj;
-}
-
-void serialEvent(Serial p){
-  if (myPort.available() >= 18)
-    inString = p.readStringUntil('\n');
 }

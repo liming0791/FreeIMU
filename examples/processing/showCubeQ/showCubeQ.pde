@@ -22,7 +22,7 @@ String inString;
 void setup() 
 {
   size(800, 600, P3D);
-  myPort = new Serial(this, serialPort, 9600);  
+  myPort = new Serial(this, serialPort, 105200);  
 
   font = createFont("Courier", 32); 
   

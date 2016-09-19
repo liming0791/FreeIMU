@@ -35,9 +35,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // HMC5843 address is fixed so don't bother to define itin
 #include <FIMU_HMC58X3.h>
 
-#include <MadgwickAHRS.h>
-#include <MahonyAHRS.h>
-
 #define twoKpDef  (2.0f * 0.5f) // 2 * proportional gain
 #define twoKiDef  (2.0f * 0.1f) // 2 * integral gain
 
@@ -54,12 +51,6 @@ class FreeSixIMU
     void init(int acc_addr, int gyro_addr, bool fastmode);
     void getRawValues(short * raw_values);
     void getValues(float * values);
-    void getQ(float * q);
-    void getEuler(float * angles);
-    void getYawPitchRoll(float * ypr);
-    void getAngles(float * angles);
-    void getRMat(float* R);
-    
     
 	ADXL345 acc;
     ITG3200 gyro;
@@ -68,19 +59,9 @@ class FreeSixIMU
     int* raw_acc, raw_gyro, raw_magn;
     
   private:
-    void AHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz);
-    //float q0, q1, q2, q3; // quaternion elements representing the estimated orientation
-    float iq0, iq1, iq2, iq3;
-    float exInt, eyInt, ezInt;  // scaled integral error
-    float twoKp;      // 2 * proportional gain (Kp)
-    float twoKi;      // 2 * integral gain (Ki)
-    float q0, q1, q2, q3; // quaternion of sensor frame relative to auxiliary frame
-    float integralFBx,  integralFBy, integralFBz;
     unsigned long lastUpdate, now; // sample period expressed in milliseconds
     float sampleFreq; // half the sample period expressed in seconds
     int startLoopTime;
 };
-
-float invSqrt(float number);
 
 #endif // FreeSixIMU_h
